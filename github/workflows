@@ -1,0 +1,40 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Docker Login
+      uses: docker/login-action@v3.2.0
+      with:
+        # Username used to log against the Docker registry
+        username: ${{ secrets.sumitpawar511 }} 
+        # Password or personal access token used to log against the Docker registry
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        
+    - name: Docker Setup Buildx
+      uses: docker/setup-buildx-action@v3.3.0
+      
+    - name: Build and push
+      uses: docker/build-push-action@v3
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/hpcowsay:latest
+        platforms: linux/amd64,linux/arm64,linux/arm/v7
+        cache-from: type=gha
+        cache-to: type=gha,mode=max      
+              
+    # - name: Build the Docker image
+    #   run: docker build . --file Dockerfile --tag hpcowsay:$(date +%s)
