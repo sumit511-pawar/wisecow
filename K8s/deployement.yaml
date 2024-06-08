@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: cowsay
+  name: cowsay
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cowsay
+  template:
+    metadata:
+      labels:
+        app: cowsay
+    spec:
+      containers:
+        - image: sumitpawar511/hpcowsay:latest
+          name: hpcowsay
+          ports:
+            - containerPort: 4499
